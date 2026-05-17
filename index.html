@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>タロット占い | Tarot Reading - ✿ YUCCHI ✿</title>
 <meta name="description" content="1枚引きのシンプルなタロット占い。ワンオラクルで今日のメッセージを受け取って。API不要・ログイン不要。by ✿ YUCCHI ✿">
 <meta property="og:title" content="タロット占い | Tarot Reading - ✿ YUCCHI ✿">
@@ -66,7 +69,7 @@
   header {
     position: relative; z-index: 1;
     text-align: center;
-    padding: 40px 20px 24px;
+    padding: 20px 20px 24px;
   }
   .header-ornament {
     font-size: 22px;
@@ -232,7 +235,7 @@
   /* single card */
   .tarot-card-wrap {
     display: flex; flex-direction: column; align-items: center;
-    flex: 1; min-width: 130px; max-width: 180px;
+    flex: 1; min-width: 100px; max-width: 180px;
   }
   .card-position-label {
     font-weight: 700;
@@ -244,7 +247,7 @@
     white-space: nowrap;
   }
   .tarot-card {
-    width: 130px; height: 220px;
+    width: min(130px, 28vw); height: min(220px, 47vw);
     border-radius: 14px;
     perspective: 800px;
     cursor: pointer;
@@ -501,8 +504,11 @@
     display: flex; align-items: center; justify-content: center; gap: 10px;
     font-weight: 700;
     animation: tapPulse 2.2s ease-in-out infinite;
+    visibility: hidden;
   }
-  .tap-hint.visible { opacity: 1; }
+  .tap-hint.visible {
+    visibility: visible;
+  }
   .tap-hint::before, .tap-hint::after {
     content: '✦';
     font-size: 11px;
@@ -570,7 +576,7 @@
   }
 
   @media(min-width:600px){
-    header { padding: 50px 20px 28px; }
+    header { padding: 28px 20px 28px; }
   }
 
   @media(prefers-color-scheme:dark){
@@ -665,7 +671,7 @@
   </div>
 
   <!-- Footer notes -->
-  <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:30px;">
+  <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:6px;">
 
     <!-- このアプリについて（免責） -->
     <div class="data-note" id="aboutNote">
@@ -692,6 +698,9 @@
       </div>
     </div>
 
+  </div>
+  <div style="text-align:right; font-family:'Zen Maru Gothic',sans-serif; font-size:11px; color:var(--text); opacity:0.45; letter-spacing:.06em; margin-top:4px; padding-right:4px;">
+    最終更新：2026.05.17
   </div>
 
 </div>
@@ -820,9 +829,11 @@ function shuffleArray(arr) {
 function drawCards() {
   if (!currentSpread) {
     const row = document.querySelector('.spread-row');
-    row.style.animation = 'none';
-    row.offsetHeight; // reflow
-    row.style.animation = 'shakePulse 0.4s ease';
+    setTimeout(() => {
+      row.style.animation = 'none';
+      row.offsetHeight; // reflow
+      row.style.animation = 'shakePulse 0.4s ease';
+    }, 0);
     return;
   }
   const spread = SPREADS[currentSpread];
@@ -845,7 +856,7 @@ function drawCards() {
     const ra = document.getElementById('resultArea');
     ra.classList.add('visible');
     ra.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 3000);
+  }, 1800);
 }
 
 function renderResult() {
@@ -917,7 +928,7 @@ function renderResult() {
     rc.appendChild(box);
   });
 
-  // overall
+  document.querySelector('.tap-hint').classList.add('visible');
   const ob = document.getElementById('overallBox');
   const ot = document.getElementById('overallText');
   if (OVERALL[currentSpread]) {
@@ -962,6 +973,7 @@ function resetAll() {
   document.getElementById('overallBox').style.display = 'none';
   drawnCards = []; flippedCount = 0;
   document.querySelector('.tap-hint').style.display = '';
+  document.querySelector('.tap-hint').classList.remove('visible');
   currentSpread = null;
   document.querySelectorAll('.spread-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.spread-row').style.animation = 'none';
