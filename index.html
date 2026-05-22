@@ -69,7 +69,7 @@
   header {
     position: relative; z-index: 1;
     text-align: center;
-    padding: 20px 20px 24px;
+    padding: 20px 20px 10px;
   }
   .header-ornament {
     font-size: 22px;
@@ -81,7 +81,7 @@
   }
   header h1 {
     font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: clamp(16px, 4vw, 20px);
+    font-size: clamp(19px, 5vw, 24px);
     font-weight: 500;
     color: var(--text);
     opacity: 0.72;
@@ -118,9 +118,10 @@
     font-size: 13px;
     letter-spacing: .40em;
     color: var(--text);
-    opacity: 0.62;
+    opacity: 0.45;
     font-weight: 400;
-    padding-top: 8px;
+    padding-top: 4px;
+    margin-bottom: 0;
     display: block;
   }
 
@@ -174,15 +175,15 @@
   }
   .spread-btn {
     flex: 1; min-width: 90px;
-    padding: 10px 8px;
+    padding: 10px 6px;
     border: 1.5px solid var(--border);
     border-radius: var(--radius-sm);
     background: var(--surface);
     font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 12px; font-weight: 500;
+    font-size: 11px; font-weight: 500;
     color: var(--text-sub); cursor: pointer;
     transition: all .2s; text-align: center;
-    line-height: 1.4;
+    line-height: 1.5;
   }
   .spread-btn.active {
     background: var(--bg);
@@ -271,15 +272,15 @@
   }
   /* 裏面 */
   .card-back {
-    background: linear-gradient(145deg, #C2B0D4 0%, #D4BED6 40%, #E0C8DC 100%);
-    border: 2.5px solid rgba(255,255,255,0.55);
-    box-shadow: 0 6px 28px rgba(120,90,160,0.22), inset 0 1px 0 rgba(255,255,255,0.4);
+    background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
+    border: 2.5px solid rgba(255,255,255,0.40);
+    box-shadow: 0 6px 28px rgba(80,55,120,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
     display: flex; align-items: center; justify-content: center;
     overflow: hidden;
   }
   .card-back-pattern {
     width: 90%; height: 90%;
-    border: 1.5px solid rgba(255,255,255,0.30);
+    border: 1.5px solid rgba(255,255,255,0.35);
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     position: relative;
@@ -287,13 +288,12 @@
   .card-back-pattern::before {
     content: '✦';
     font-size: 28px;
-    color: rgba(255,255,255,0.55);
-    text-shadow: 0 0 12px rgba(255,255,255,0.4);
-    animation: glowPulse 3s ease-in-out infinite;
+    color: rgba(255,255,255,0.70);
+    text-shadow: 0 0 12px rgba(255,255,255,0.5);
   }
   .card-back-deco {
     position: absolute; inset: 6px;
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
     border-radius: 7px;
   }
   @keyframes glowPulse {
@@ -455,7 +455,7 @@
     font-size: 10px; color: var(--text);
     opacity: 0.65;
     text-align: center; line-height: 1.8;
-    margin-top: 10px; padding: 0 16px;
+    margin-top: 4px; padding: 0 16px;
     letter-spacing: .04em;
   }
   .data-note {
@@ -497,13 +497,13 @@
 
   /* tap hint */
   .tap-hint {
-    font-size: 15px; color: var(--text);
+    font-size: 19px; color: var(--text);
     opacity: 0;
     text-align: center; margin-top: -4px; margin-bottom: 16px;
     letter-spacing: .10em;
     display: flex; align-items: center; justify-content: center; gap: 10px;
     font-weight: 700;
-    animation: tapPulse 2.2s ease-in-out infinite;
+    animation: tapPulse 3.2s ease-in-out infinite;
     visibility: hidden;
   }
   .tap-hint.visible {
@@ -515,8 +515,8 @@
     opacity: 0.5;
   }
   @keyframes tapPulse {
-    0%,100% { opacity: 0.35; }
-    50%      { opacity: 0.85; }
+    0%,100% { opacity: 0.32; }
+    50%      { opacity: 0.70; }
   }
 
   /* shuffle animation */
@@ -526,7 +526,7 @@
     backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
     z-index: 100;
     align-items: center; justify-content: center;
-    flex-direction: column; gap: 20px;
+    flex-direction: column; gap: 36px;
   }
   .shuffle-overlay.active { display: flex; }
   .shuffle-deck {
@@ -537,7 +537,7 @@
     position: absolute;
     width: 58px; height: 90px;
     border-radius: 8px;
-    background: linear-gradient(145deg, #C2B0D4 0%, #D4BED6 40%, #E0C8DC 100%);
+    background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
     border: 1.5px solid rgba(255,255,255,0.65);
     box-shadow: 0 3px 12px rgba(120,90,160,0.25);
     top: 50%; left: 50%;
@@ -557,26 +557,45 @@
     0%   { transform: translate(-50%,-50%) rotate(0deg)   translateY(-58px) rotate(0deg); }
     100% { transform: translate(-50%,-50%) rotate(360deg) translateY(-58px) rotate(-360deg); }
   }
-  .shuffle-text {
+  .shuffle-card-inner {
+    position: absolute; inset: 5px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .shuffle-card-inner::before {
+    content: '✦';
+    font-size: 13px;
+    color: rgba(255,255,255,0.70);
+    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+  }
+  .shuffle-card-deco {
+    position: absolute; inset: 4px;
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 3px;
+  }
+  .shuffle-texts {
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+  }
     font-family: 'Cormorant Garamond', serif;
     font-size: 17px; font-style: italic;
-    color: #fff; letter-spacing: .22em;
-    text-shadow: 0 0 16px rgba(200,170,230,0.7);
+    color: rgba(240,230,248,0.55); letter-spacing: .22em;
+    text-shadow: 0 0 16px rgba(220,205,235,0.35);
     animation: fadeInOut 1.4s ease-in-out infinite;
   }
   .shuffle-sub {
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: 14px; font-weight: 700;
-    color: rgba(255,255,255,0.80); letter-spacing: .12em;
+    color: rgba(235,225,245,0.50); letter-spacing: .12em;
     animation: fadeInOut 1.4s ease-in-out infinite 0.2s;
   }
   @keyframes fadeInOut {
-    0%,100% { opacity: 0.6; }
-    50%      { opacity: 1; }
+    0%,100% { opacity: 0.5; }
+    50%      { opacity: 0.85; }
   }
 
   @media(min-width:600px){
-    header { padding: 28px 20px 28px; }
+    header { padding: 28px 20px 12px; }
   }
 
   @media(prefers-color-scheme:dark){
@@ -584,7 +603,66 @@
     body { background-color: #D4C6E2 !important; color: #5A4A5A !important; }
   }
 
-  /* card enter animation */
+  /* ─── Confirm modal ─── */
+  .confirm-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(90,74,90,0.35);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .confirm-overlay.active { display: flex; }
+  .confirm-modal {
+    background: rgba(255,255,255,0.96);
+    border-radius: 20px;
+    padding: 32px 28px 24px;
+    max-width: 320px; width: 90%;
+    text-align: center;
+    box-shadow: 0 12px 48px rgba(90,74,90,0.22);
+    border: 1.5px solid rgba(255,255,255,0.80);
+  }
+  .confirm-modal-icon {
+    font-size: 32px; margin-bottom: 12px; display: block;
+  }
+  .confirm-modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-style: italic;
+    color: var(--text); letter-spacing: .12em;
+    margin-bottom: 10px;
+  }
+  .confirm-modal-text {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px; color: var(--text);
+    opacity: 0.72; line-height: 1.9;
+    letter-spacing: .04em; margin-bottom: 24px;
+  }
+  .confirm-modal-btns {
+    display: flex; gap: 10px;
+  }
+  .confirm-btn-cancel {
+    flex: 1; padding: 11px;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--text-sub); cursor: pointer;
+    transition: all .2s; letter-spacing: .06em;
+  }
+  .confirm-btn-cancel:hover { background: var(--blush); }
+  .confirm-btn-ok {
+    flex: 1; padding: 11px;
+    border: none; border-radius: 999px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-d) 100%);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #fff; cursor: pointer;
+    transition: all .2s; letter-spacing: .06em;
+    box-shadow: 0 3px 12px rgba(150,120,180,0.30);
+  }
+  .confirm-btn-ok:hover { opacity: 0.88; }
+
+
   @keyframes cardAppear {
     from { opacity:0; transform: translateY(20px) scale(0.95); }
     to   { opacity:1; transform: translateY(0) scale(1); }
@@ -607,29 +685,44 @@
 <!-- Stars -->
 <div class="stars" id="stars"></div>
 
+<!-- Confirm modal -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-modal">
+    <span class="confirm-modal-icon">✦</span>
+    <div class="confirm-modal-title">TOPに戻りますか？</div>
+    <div class="confirm-modal-text">カードの結果はリセットされます。<br>よろしいですか？</div>
+    <div class="confirm-modal-btns">
+      <button class="confirm-btn-cancel" onclick="closeConfirm()">キャンセル</button>
+      <button class="confirm-btn-ok" onclick="confirmReset()">TOPに戻る</button>
+    </div>
+  </div>
+</div>
+
 <!-- Shuffle -->
 <div class="shuffle-overlay" id="loading">
   <div class="shuffle-deck">
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
-    <div class="shuffle-card"></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
+    <div class="shuffle-card"><div class="shuffle-card-inner"><div class="shuffle-card-deco"></div></div></div>
   </div>
-  <div class="shuffle-text">Shuffling...</div>
-  <div class="shuffle-sub">カードをシャッフルしています</div>
+  <div class="shuffle-texts">
+    <div class="shuffle-text">Shuffling...</div>
+    <div class="shuffle-sub">カードをシャッフルしています</div>
+  </div>
 </div>
 
 <header>
   <span class="header-ornament">✦ ✧ ✦</span>
   <h1>タロット占い</h1>
   <h2>Tarot Reading</h2>
-  <div class="title-sub">カードがあなたへのメッセージを届けます</div>
+  <div class="title-sub">大アルカナ 22枚</div>
   <span class="brand">✿ YUCCHI ✿</span>
 
 </header>
@@ -644,13 +737,13 @@
     <label style="margin-top: 18px;">✦ スプレッドを選ぶ</label>
     <div class="spread-row">
       <button class="spread-btn" onclick="selectSpread('one',this)">
-        🌙 ワンオラクル<br><span style="font-size:10px;opacity:.7;">1枚引き</span>
+        🌙<br>ワンオラクル<br><span style="font-size:10px;opacity:.7;">1枚引き</span>
       </button>
       <button class="spread-btn" onclick="selectSpread('three',this)">
-        ✦ スリーカード<br><span style="font-size:10px;opacity:.7;">過去・現在・未来</span>
+        ✦<br>スリーカード<br><span style="font-size:10px;opacity:.7;">過去・現在・未来</span>
       </button>
       <button class="spread-btn" onclick="selectSpread('cross',this)">
-        🌸 クロス<br><span style="font-size:10px;opacity:.7;">状況・アドバイス</span>
+        🌸<br>クロス<br><span style="font-size:10px;opacity:.7;">状況・アドバイス</span>
       </button>
     </div>
 
@@ -667,7 +760,7 @@
       <div class="overall-title">✦ 総合メッセージ</div>
       <div class="overall-text" id="overallText"></div>
     </div>
-    <button class="again-btn" onclick="resetAll()">✧ TOP に戻る</button>
+    <button class="again-btn" onclick="openConfirm()">✧ TOP に戻る</button>
   </div>
 
   <!-- Footer notes -->
@@ -789,7 +882,7 @@ const MAJOR = [
 ];
 
 const SPREADS = {
-  one:   { label:'One Oracle — ワンオラクル', positions:['あなたへのメッセージ'] },
+  one:   { label:'One Oracle — ワンオラクル', positions:[''] },
   three: { label:'Three Cards — 過去・現在・未来', positions:['過去','現在','未来'] },
   cross: { label:'Cross — 状況とアドバイス', positions:['現在の状況','アドバイス'] }
 };
@@ -797,13 +890,13 @@ const SPREADS = {
 const OVERALL = {
   one: null,
   three: [
-    '過去の経験がしっかりと根を張り、現在の土台となっています。流れを信じて、前を向いて進んでください。',
-    '過去・現在・未来の流れを見ると、あなたはすでに変化の渦中にいます。それぞれのカードのメッセージを統合して、自分なりの答えを見つけてみましょう。',
-    '三枚のカードが描く物語は、あなたの成長の旅そのものです。焦らず、一歩ずつ確かめながら歩んでいきましょう。'
+    'カードが示す流れを、ひとつの物語として受け取ってみてください。過去・現在・未来はつながっています。',
+    '三枚のカードはそれぞれ、あなたの内側にある知恵を映しています。全体の流れを感じながら、自分なりの答えを見つけてみましょう。',
+    'カードが示す流れを、物語として受け取ってみてください。道標のひとつになるかもしれません。'
   ],
   cross: [
-    '状況とアドバイスの両方が示すのは、今こそ変化のとき。二枚のカードを統合して、自分だけの答えを導き出しましょう。',
-    'カードは現在地を見せてくれています。アドバイスのカードの言葉を、小さなことから実践してみてください。'
+    '二枚のカードが示すものを合わせて読むとき、より深い気づきが生まれます。アドバイスのカードを、小さなことから実践してみてください。',
+    '2枚のカードをあなたなりに解釈してみてください。気づきが生まれるかもしれません。'
   ]
 };
 
@@ -963,6 +1056,17 @@ function flipCard(idx, cardEl) {
       }
     }
   }, 400);
+}
+
+function openConfirm() {
+  document.getElementById('confirmOverlay').classList.add('active');
+}
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('active');
+}
+function confirmReset() {
+  closeConfirm();
+  resetAll();
 }
 
 function resetAll() {
