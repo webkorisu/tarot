@@ -50,12 +50,67 @@
     padding-bottom: 60px;
   }
 
+  /* ─── Mist：レンズフレア風キラキラ（ゆらゆら移動付き） ─── */
+  .mist {
+    position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+  }
+  .sparkle-wrap {
+    position: absolute;
+    animation: sparkleDrift var(--dur, 10s) ease-in-out infinite var(--delay, 0s);
+  }
+  @keyframes sparkleDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(var(--dx, 10px), var(--dy, -10px)); }
+  }
+  .sparkle-star {
+    position: relative;
+    display: block;
+    pointer-events: none;
+    animation: sparkleTwinkle var(--sDur, 2.4s) ease-in-out infinite var(--sDelay, 0s);
+  }
+  .sparkle-star::before,
+  .sparkle-star::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.95) 50%, transparent 100%);
+  }
+  .sparkle-star::before {
+    width: 100%; height: 1.6px;
+    transform: translate(-50%, -50%);
+  }
+  .sparkle-star::after {
+    width: 1.6px; height: 100%;
+    transform: translate(-50%, -50%);
+  }
+  .sparkle-star .sparkle-core {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 5px; height: 5px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255,255,255,0.85);
+  }
+  @keyframes sparkleTwinkle {
+    0%, 100% { opacity: 0;   transform: scale(0.2); }
+    50%      { opacity: 1;   transform: scale(1); }
+  }
+
   /* ─── Stars background ─── */
   .stars {
     position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
   }
-  .star {
+  .star-wrap {
     position: absolute;
+    animation: starDrift var(--wdur, 12s) ease-in-out infinite var(--wdelay, 0s);
+  }
+  @keyframes starDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(var(--wdx, 8px), var(--wdy, -8px)); }
+  }
+  .star {
+    position: relative;
     background: rgba(255,255,255,0.55);
     border-radius: 50%;
     animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
@@ -83,8 +138,7 @@
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: clamp(19px, 5vw, 24px);
     font-weight: 500;
-    color: var(--text);
-    opacity: 0.72;
+    color: #5D3F73;
     letter-spacing: .14em;
     margin-bottom: 6px;
   }
@@ -93,16 +147,14 @@
     font-size: clamp(30px, 7vw, 52px);
     font-weight: 400;
     font-style: italic;
-    color: var(--text);
-    opacity: 0.72;
+    color: #5D3F73;
     letter-spacing: .10em;
     line-height: 1.15;
     margin-bottom: 10px;
   }
   .title-sub {
     font-size: 13px;
-    color: var(--text);
-    opacity: 0.65;
+    color: #5D3F73;
     letter-spacing: .08em;
     margin-bottom: 12px;
     display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -113,12 +165,20 @@
     opacity: 0.35;
     flex-shrink:0;
   }
+  .title-feature {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 11px;
+    color: #9B7BB5;
+    letter-spacing: .03em;
+    margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
   .brand {
     font-family: 'Cormorant Garamond', serif;
     font-size: 13px;
     letter-spacing: .40em;
-    color: var(--text);
-    opacity: 0.45;
+    color: #4A2E63;
+    opacity: 0.78;
     font-weight: 400;
     padding-top: 4px;
     margin-bottom: 0;
@@ -148,6 +208,15 @@
     display: block;
     font-size: 13px; font-weight: 700;
     color: var(--text); opacity: 0.72; letter-spacing: .06em;
+    margin-bottom: 10px;
+  }
+  .question-subnote {
+    font-size: 11px;
+    color: var(--text-sub);
+    opacity: 0.90;
+    letter-spacing: .03em;
+    line-height: 1.6;
+    margin-top: -4px;
     margin-bottom: 10px;
   }
   .question-block textarea {
@@ -211,6 +280,153 @@
   }
   .draw-btn:hover { opacity: .88; box-shadow: 0 6px 20px rgba(190,140,170,0.38); }
   .draw-btn:active { transform: scale(.97); }
+
+  /* ─── Select phase (カードを自分で選ぶ) ─── */
+  .select-block {
+    display: none;
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid rgba(255,255,255,0.70);
+    text-align: center;
+  }
+  .select-block.visible { display: block; }
+
+  .select-instruction {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--text); letter-spacing: .06em;
+    line-height: 1.6;
+    margin-bottom: 6px;
+    min-height: 22px;
+  }
+  .select-hint {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 11px;
+    color: var(--text-sub);
+    opacity: 0.85;
+    letter-spacing: .04em;
+    margin-bottom: 16px;
+  }
+
+  /* tray：選んだ位置のプレースホルダー */
+  .select-tray {
+    display: flex; justify-content: center; flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .select-slot {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    min-width: 62px;
+    padding: 9px 8px;
+    border-radius: var(--radius-sm);
+    border: 1.5px dashed var(--border);
+    background: var(--surface);
+    transition: all .25s;
+  }
+  .select-slot.filled {
+    border-style: solid;
+    border-color: var(--primary-d);
+    background: var(--bg);
+    box-shadow: 0 2px 10px rgba(150,120,180,0.18);
+  }
+  .select-slot-label {
+    font-size: 10px; font-weight: 700;
+    color: var(--text-sub);
+    letter-spacing: .04em; white-space: nowrap;
+  }
+  .select-slot-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-style: italic;
+    color: var(--text); opacity: .80;
+  }
+
+  /* 22枚のミニカード */
+  .select-grid {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 8px;
+    margin: 4px 0 18px;
+  }
+  .mini-card {
+    position: relative;
+    width: min(50px, 12.5vw);
+    height: min(82px, 20.5vw);
+    border-radius: 7px;
+    cursor: pointer;
+    background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
+    border: 1.5px solid rgba(255,255,255,0.45);
+    box-shadow: 0 3px 10px rgba(100,70,120,0.25);
+    flex-shrink: 0;
+    transition: transform .18s, opacity .25s, box-shadow .18s;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+  .mini-card-inner {
+    position: absolute; inset: 4px;
+    border: 1px solid rgba(255,255,255,0.30);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mini-card-inner::before {
+    content: '✦';
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+  }
+  .mini-card-check {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.7);
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .mini-card:hover:not(.picked) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(100,70,120,0.35);
+  }
+  .mini-card:active:not(.picked) { transform: scale(.93); }
+  .mini-card.picked {
+    opacity: 0.30;
+    transform: scale(.88);
+    pointer-events: none;
+    box-shadow: none;
+  }
+  .mini-card.picked .mini-card-check { opacity: 1; }
+
+  .select-confirm-btn {
+    display: block; width: 100%;
+    padding: 15px 24px; margin-top: 4px;
+    border: none; border-radius: 999px;
+    background: #9E90B8;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14.5px; font-weight: 700;
+    color: #fff; letter-spacing: .06em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(190,140,170,0.28);
+    transition: transform .15s, opacity .2s;
+  }
+  .select-confirm-btn:hover { opacity: .88; }
+  .select-confirm-btn:active { transform: scale(.97); }
+
+  .select-undo-btn {
+    display: inline-block;
+    margin-top: 12px;
+    background: none; border: none;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-sub);
+    letter-spacing: .04em;
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.75;
+  }
+  .select-undo-btn:hover { opacity: 1; }
 
   /* ─── Result area ─── */
   .result-area { display: none; }
@@ -428,6 +644,66 @@
   .overall-text {
     font-size: 13px; line-height: 2.1;
     color: var(--text);
+  }
+
+  /* AI consult box */
+  .ai-consult-box {
+    background: rgba(255,255,255,0.62);
+    border: 1.5px solid rgba(232,181,181,0.55);
+    border-radius: var(--radius);
+    padding: 22px 22px 20px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    text-align: center;
+  }
+  .ai-consult-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px; font-style: italic;
+    color: var(--text); letter-spacing: .12em;
+    margin-bottom: 8px;
+  }
+  .ai-consult-desc {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 12.5px; line-height: 1.9;
+    color: var(--text); opacity: 0.72;
+    margin-bottom: 16px;
+  }
+  .ai-consult-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: none; border-radius: 999px;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--rose-d) 100%);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13.5px; font-weight: 700;
+    color: #fff; letter-spacing: .06em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(212,152,152,0.32);
+    transition: transform .15s, opacity .2s, box-shadow .2s;
+  }
+  .ai-consult-btn:hover { opacity: .88; box-shadow: 0 6px 20px rgba(212,152,152,0.42); }
+  .ai-consult-btn:active { transform: scale(.97); }
+  .ai-consult-toast {
+    margin-top: 12px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 11.5px; font-weight: 700;
+    color: var(--rose-d);
+    letter-spacing: .04em;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity .3s ease;
+  }
+  .ai-consult-toast.visible {
+    opacity: 1;
+    max-height: 40px;
+  }
+  .ai-consult-note {
+    margin-top: 10px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 10.5px; line-height: 1.8;
+    color: var(--text-sub);
+    opacity: 0.85;
   }
 
   /* again button */
@@ -682,6 +958,9 @@
 </head>
 <body>
 
+<!-- Mist（レンズフレア風キラキラ） -->
+<div class="mist" id="mist"></div>
+
 <!-- Stars -->
 <div class="stars" id="stars"></div>
 
@@ -723,6 +1002,7 @@
   <h1>タロット占い</h1>
   <h2>Tarot Reading</h2>
   <div class="title-sub">大アルカナ 22枚</div>
+  <div class="title-feature">✦ 結果はコピペで好きなAIに相談できます</div>
   <span class="brand">✿ YUCCHI ✿</span>
 
 </header>
@@ -731,7 +1011,8 @@
 
   <!-- Input -->
   <div class="question-block" id="inputBlock">
-    <label>✦ 今日の問いかけ（任意）</label>
+    <label>✦ 占いたいこと</label>
+    <div class="question-subnote">入力すると、AIへの相談がもっと具体的になります（空欄でもOK）</div>
     <textarea id="questionText" placeholder="例：今の私に必要なことは？&#10;（空欄でも大丈夫です）" rows="3"></textarea>
 
     <label style="margin-top: 18px;">✦ スプレッドを選ぶ</label>
@@ -747,7 +1028,18 @@
       </button>
     </div>
 
-    <button class="draw-btn" onclick="drawCards()">🔮 シャッフルしてカードを引く</button>
+    <button class="draw-btn" onclick="drawCards()">🔮 シャッフルしてカードを選ぶ</button>
+  </div>
+
+  <!-- Select phase（カードを自分で選ぶ） -->
+  <div class="select-block" id="selectBlock">
+    <div class="select-instruction" id="selectInstruction"></div>
+    <div class="select-hint">✦ カードをなぞってシャッフルできます</div>
+    <div class="select-tray" id="selectTray"></div>
+    <div class="select-grid" id="selectGrid"></div>
+    <button class="select-confirm-btn" id="selectConfirmBtn" style="display:none" onclick="finalizeSelection()">✦ このカードで占う</button>
+    <br>
+    <button class="select-undo-btn" id="selectUndoBtn" style="display:none" onclick="undoSelection()">← 1つ前に戻る</button>
   </div>
 
   <!-- Result -->
@@ -759,6 +1051,16 @@
     <div class="overall-box" id="overallBox" style="display:none">
       <div class="overall-title">✦ 総合メッセージ</div>
       <div class="overall-text" id="overallText"></div>
+    </div>
+    <div class="ai-consult-box" id="aiConsultBox" style="display:none">
+      <div class="ai-consult-title">✦ AIにもっと深く相談する</div>
+      <div class="ai-consult-desc">
+        結果をコピーして、ChatGPT・Gemini・Claudeなど<br>
+        お好きなAIに貼り付けると、さらに深く読み解いてもらえます。
+      </div>
+      <button class="ai-consult-btn" onclick="copyAiPrompt()">📋 相談文をコピーする</button>
+      <div class="ai-consult-toast" id="aiToast"></div>
+      <div class="ai-consult-note">コピー以外の操作は行われません。外部送信・通信は発生しません。</div>
     </div>
     <button class="again-btn" onclick="openConfirm()">✧ TOP に戻る</button>
   </div>
@@ -793,21 +1095,62 @@
 
   </div>
   <div style="text-align:right; font-family:'Zen Maru Gothic',sans-serif; font-size:11px; color:var(--text); opacity:0.45; letter-spacing:.06em; margin-top:4px; padding-right:4px;">
-    最終更新：2026.05.17
+    最終更新：2026.06.27
   </div>
 
 </div>
 
 <script>
+/* ─── Mist：レンズフレア風キラキラ（ゆらゆら移動付き） ─── */
+(function(){
+  const m = document.getElementById('mist');
+
+  for (let i = 0; i < 16; i++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'sparkle-wrap';
+    const left = Math.random() * 100;
+    const top = Math.random() * 100;
+    const dur = (8 + Math.random() * 10).toFixed(1) + 's';     // 8〜18s（ゆっくり）
+    const delay = (Math.random() * 5).toFixed(1) + 's';
+    const dx = (Math.random() * 30 - 15).toFixed(0) + 'px';    // -15〜15px
+    const dy = (Math.random() * 30 - 15).toFixed(0) + 'px';    // -15〜15px
+    wrap.style.cssText = `left:${left}%;top:${top}%;--dur:${dur};--delay:${delay};--dx:${dx};--dy:${dy};`;
+
+    const star = document.createElement('div');
+    star.className = 'sparkle-star';
+    const size = Math.random() * 50 + 16;       // 16〜66px（光の線の長さ）
+    const sDur = (1.8 + Math.random() * 2.4).toFixed(1) + 's';  // 1.8〜4.2s
+    const sDelay = (Math.random() * 4).toFixed(1) + 's';
+    star.style.cssText = `width:${size}px;height:${size}px;--sDur:${sDur};--sDelay:${sDelay};`;
+
+    const core = document.createElement('div');
+    core.className = 'sparkle-core';
+    star.appendChild(core);
+    wrap.appendChild(star);
+    m.appendChild(wrap);
+  }
+})();
+
 /* ─── Stars ─── */
 (function(){
   const s=document.getElementById('stars');
   for(let i=0;i<38;i++){
+    const wrap = document.createElement('div');
+    wrap.className = 'star-wrap';
+    const left = Math.random()*100;
+    const top = Math.random()*100;
+    const wdur = (10 + Math.random()*10).toFixed(1)+'s';   // 10〜20s
+    const wdelay = (Math.random()*5).toFixed(1)+'s';
+    const wdx = (Math.random()*20-10).toFixed(0)+'px';     // -10〜10px
+    const wdy = (Math.random()*20-10).toFixed(0)+'px';     // -10〜10px
+    wrap.style.cssText = `left:${left}%;top:${top}%;--wdur:${wdur};--wdelay:${wdelay};--wdx:${wdx};--wdy:${wdy};`;
+
     const el=document.createElement('div');
     const sz=Math.random()*2.5+1;
     el.className='star';
-    el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
-    s.appendChild(el);
+    el.style.cssText=`width:${sz}px;height:${sz}px;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
+    wrap.appendChild(el);
+    s.appendChild(wrap);
   }
 })();
 
@@ -901,8 +1244,11 @@ const OVERALL = {
 };
 
 let currentSpread = null;
-let drawnCards = [];
+let shuffledDeck = [];     // シャッフル後の22枚（カード＋正逆）
+let selectedIndices = [];  // ユーザーが選んだ順番（shuffledDeckのindex）
+let drawnCards = [];       // 確定した占い結果
 let flippedCount = 0;
+let dragState = null;      // カードをなぞって混ぜる操作の状態
 
 function selectSpread(type, btn) {
   currentSpread = type;
@@ -929,27 +1275,191 @@ function drawCards() {
     }, 0);
     return;
   }
-  const spread = SPREADS[currentSpread];
-  const count = spread.positions.length;
   const loading = document.getElementById('loading');
   loading.classList.add('active');
 
   setTimeout(() => {
-    const shuffled = shuffleArray(MAJOR);
-    drawnCards = [];
-    for (let i = 0; i < count; i++) {
-      const card = shuffled[i];
-      const reversed = Math.random() < 0.35;
-      drawnCards.push({ card, reversed });
-    }
-    flippedCount = 0;
     loading.classList.remove('active');
-    renderResult();
-    document.getElementById('inputBlock').style.display = 'none';
-    const ra = document.getElementById('resultArea');
-    ra.classList.add('visible');
-    ra.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    startSelection();
   }, 1800);
+}
+
+/* ─── カードを自分で選ぶフェーズ ─── */
+function startSelection() {
+  shuffledDeck = shuffleArray(MAJOR).map(card => ({ card, reversed: Math.random() < 0.35 }));
+  selectedIndices = [];
+
+  document.getElementById('inputBlock').style.display = 'none';
+  renderSelectGrid();
+  updateSelectUI();
+
+  const sb = document.getElementById('selectBlock');
+  sb.classList.add('visible');
+  sb.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSelectGrid() {
+  const grid = document.getElementById('selectGrid');
+  grid.innerHTML = '';
+  shuffledDeck.forEach((_, i) => {
+    const el = document.createElement('div');
+    el.className = 'mini-card';
+    el.id = 'mini-' + i;
+    el.innerHTML = `
+      <div class="mini-card-inner"></div>
+      <div class="mini-card-check">✓</div>`;
+    el.addEventListener('pointerdown', (e) => onMiniPointerDown(i, e));
+    grid.appendChild(el);
+  });
+}
+
+/* なぞって混ぜる：タップとの判定は「動いた距離」で行う */
+function onMiniPointerDown(i, e) {
+  if (selectedIndices.includes(i)) return;
+  dragState = {
+    startX: e.clientX, startY: e.clientY,
+    startIndex: i, moved: false,
+    prevIndex: i, lastSwapAt: 0
+  };
+  window.addEventListener('pointermove', onGlobalPointerMove);
+  window.addEventListener('pointerup', onGlobalPointerUp, { once: true });
+  window.addEventListener('pointercancel', onGlobalPointerUp, { once: true });
+}
+
+function onGlobalPointerMove(e) {
+  if (!dragState) return;
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  if (Math.hypot(dx, dy) > 6) dragState.moved = true;
+  if (!dragState.moved) return;
+
+  const now = performance.now();
+  if (now - dragState.lastSwapAt < 240) return; // ゆっくり目に：連続スワップの間隔を広げる
+
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const cardEl = target && target.closest ? target.closest('.mini-card') : null;
+  if (!cardEl) return;
+  const hoverIndex = parseInt(cardEl.id.replace('mini-', ''), 10);
+  if (Number.isNaN(hoverIndex) || hoverIndex === dragState.prevIndex) return;
+  if (selectedIndices.includes(hoverIndex) || selectedIndices.includes(dragState.prevIndex)) return;
+
+  swapMiniCards(dragState.prevIndex, hoverIndex);
+  dragState.prevIndex = hoverIndex;
+  dragState.lastSwapAt = now;
+}
+
+function onGlobalPointerUp() {
+  window.removeEventListener('pointermove', onGlobalPointerMove);
+  if (dragState && !dragState.moved) {
+    pickCard(dragState.startIndex);
+  }
+  dragState = null;
+}
+
+/* 2枚のカードを見た目だけ入れ替える（ふわっとアニメーション） */
+function swapMiniCards(a, b) {
+  const elA = document.getElementById('mini-' + a);
+  const elB = document.getElementById('mini-' + b);
+  if (!elA || !elB || elA === elB) return;
+
+  const grid = document.getElementById('selectGrid');
+  const rectA = elA.getBoundingClientRect();
+  const rectB = elB.getBoundingClientRect();
+
+  const placeholder = document.createElement('div');
+  grid.insertBefore(placeholder, elA);
+  grid.insertBefore(elA, elB);
+  grid.insertBefore(elB, placeholder);
+  grid.removeChild(placeholder);
+
+  flipAnimate(elA, rectA, elA.getBoundingClientRect(), 1);
+  flipAnimate(elB, rectB, elB.getBoundingClientRect(), -1);
+}
+
+function flipAnimate(el, oldRect, newRect, spinDir) {
+  const dx = oldRect.left - newRect.left;
+  const dy = oldRect.top - newRect.top;
+  el.style.transition = 'none';
+  el.style.transform = `translate(${dx}px, ${dy}px) scale(1.04)`;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.style.transition = 'transform .5s ease-in-out';
+      el.style.transform = `rotate(${spinDir * 360}deg)`;
+    });
+  });
+}
+
+function pickCard(i) {
+  const spread = SPREADS[currentSpread];
+  const need = spread.positions.length;
+  if (selectedIndices.length >= need) return;
+  if (selectedIndices.includes(i)) return;
+
+  selectedIndices.push(i);
+  const el = document.getElementById('mini-' + i);
+  if (el) el.classList.add('picked');
+  updateSelectUI();
+}
+
+function undoSelection() {
+  if (selectedIndices.length === 0) return;
+  const last = selectedIndices.pop();
+  const el = document.getElementById('mini-' + last);
+  if (el) el.classList.remove('picked');
+  updateSelectUI();
+}
+
+function updateSelectUI() {
+  const spread = SPREADS[currentSpread];
+  const need = spread.positions.length;
+  const have = selectedIndices.length;
+
+  const instr = document.getElementById('selectInstruction');
+  const confirmBtn = document.getElementById('selectConfirmBtn');
+  const undoBtn = document.getElementById('selectUndoBtn');
+
+  if (have >= need) {
+    instr.textContent = 'カードが揃いました ✦';
+    confirmBtn.style.display = 'block';
+  } else {
+    const posName = spread.positions[have];
+    instr.textContent = posName
+      ? `「${posName}」のカードを選んでください（残り${need - have}枚）`
+      : 'カードを1枚選んでください';
+    confirmBtn.style.display = 'none';
+  }
+  undoBtn.style.display = have > 0 ? 'inline-block' : 'none';
+
+  // tray
+  const tray = document.getElementById('selectTray');
+  tray.innerHTML = '';
+  for (let p = 0; p < need; p++) {
+    const slot = document.createElement('div');
+    slot.className = 'select-slot' + (p < have ? ' filled' : '');
+
+    const label = document.createElement('div');
+    label.className = 'select-slot-label';
+    label.textContent = spread.positions[p] || (need === 1 ? '✦' : ('No.' + (p + 1)));
+    slot.appendChild(label);
+
+    const mark = document.createElement('div');
+    mark.className = 'select-slot-mark';
+    mark.textContent = p < have ? '✦' : String(p + 1);
+    slot.appendChild(mark);
+
+    tray.appendChild(slot);
+  }
+}
+
+function finalizeSelection() {
+  drawnCards = selectedIndices.map(i => shuffledDeck[i]);
+  flippedCount = 0;
+
+  document.getElementById('selectBlock').classList.remove('visible');
+  renderResult();
+  const ra = document.getElementById('resultArea');
+  ra.classList.add('visible');
+  ra.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderResult() {
@@ -1054,8 +1564,106 @@ function flipCard(idx, cardEl) {
         const ob = document.getElementById('overallBox');
         ob.style.display = 'block';
       }
+      document.getElementById('aiConsultBox').style.display = 'block';
     }
   }, 400);
+}
+
+function buildAiPrompt() {
+  const q = document.getElementById('questionText').value.trim();
+  const spread = SPREADS[currentSpread];
+  const lines = [];
+
+  if (q) {
+    lines.push('私は次のテーマについてタロット占いをしました。');
+    lines.push('');
+    lines.push('【占いたいこと】');
+    lines.push(q);
+    lines.push('');
+  } else {
+    lines.push('私はタロット占いをしました。');
+    lines.push('');
+  }
+
+  lines.push('【占いの結果】');
+  drawnCards.forEach(({ card, reversed }, idx) => {
+    const posLabel = spread.positions[idx] ? spread.positions[idx] + '：' : '';
+    lines.push(`・${posLabel}${card.nameJa}（${reversed ? '逆位置' : '正位置'}）`);
+  });
+  lines.push('');
+
+  if (q) {
+    lines.push('この結果を詳しく解説してください。');
+    lines.push('');
+    lines.push('特に');
+    lines.push('・占いたいこととの関係');
+    if (drawnCards.length > 1) {
+      lines.push('・カード同士の関係性');
+    }
+    lines.push('・注意点');
+    lines.push('・今後取るべき行動');
+    lines.push('');
+    lines.push('について、わかりやすく教えてください。');
+  } else {
+    lines.push('このカードの意味を詳しく解説してください。');
+    lines.push('');
+    lines.push('特に');
+    if (drawnCards.length > 1) {
+      lines.push('・カード同士の関係性');
+    }
+    lines.push('・このカードが伝えようとしているメッセージ');
+    lines.push('・注意点');
+    lines.push('・今後取るべき行動');
+    lines.push('');
+    lines.push('について、わかりやすく教えてください。');
+  }
+
+  return lines.join('\n');
+}
+
+function showAiToast(msg) {
+  const toast = document.getElementById('aiToast');
+  toast.textContent = msg;
+  toast.classList.add('visible');
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 3200);
+}
+
+function fallbackCopyText(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.top = '-9999px';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function copyAiPrompt() {
+  const text = buildAiPrompt();
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showAiToast('コピーしました ✓ お好きなAIに貼り付けてみてください');
+    }).catch(() => {
+      const ok = fallbackCopyText(text);
+      showAiToast(ok
+        ? 'コピーしました ✓ お好きなAIに貼り付けてみてください'
+        : 'コピーできませんでした。お手数ですが手動でお試しください');
+    });
+  } else {
+    const ok = fallbackCopyText(text);
+    showAiToast(ok
+      ? 'コピーしました ✓ お好きなAIに貼り付けてみてください'
+      : 'コピーできませんでした。お手数ですが手動でお試しください');
+  }
 }
 
 function openConfirm() {
@@ -1071,11 +1679,21 @@ function confirmReset() {
 
 function resetAll() {
   document.getElementById('resultArea').classList.remove('visible');
+  document.getElementById('selectBlock').classList.remove('visible');
+  document.getElementById('selectGrid').innerHTML = '';
+  document.getElementById('selectTray').innerHTML = '';
   document.getElementById('inputBlock').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('readingsContainer').innerHTML = '';
   document.getElementById('overallBox').style.display = 'none';
+  document.getElementById('aiConsultBox').style.display = 'none';
+  const aiToast = document.getElementById('aiToast');
+  aiToast.classList.remove('visible');
+  aiToast.textContent = '';
+  shuffledDeck = []; selectedIndices = [];
   drawnCards = []; flippedCount = 0;
+  window.removeEventListener('pointermove', onGlobalPointerMove);
+  dragState = null;
   document.querySelector('.tap-hint').style.display = '';
   document.querySelector('.tap-hint').classList.remove('visible');
   currentSpread = null;
