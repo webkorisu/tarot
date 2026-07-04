@@ -3,16 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>タロット占い アプリ | Tarot Reading | 大アルカナ22枚 | ✿ YUCCHI ✿</title>
+<meta name="description" content="タロット占い アプリ。大アルカナ22枚・ワンオラクル・クロス・スリーカードのスプレッドに対応。結果をコピーしてお好きなAIに相談できます。ログイン不要・完全無料。✿ YUCCHI ✿">
+<meta property="og:title" content="タロット占い アプリ | Tarot Reading | ✿ YUCCHI ✿">
+<meta property="og:description" content="大アルカナ22枚のタロット占いアプリ。ワンオラクル・クロス・スリーカード対応。結果をAIに相談できます。ログイン不要・完全無料。✿ YUCCHI ✿">
+
+<link rel="icon" href="favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
 <meta name="color-scheme" content="light only">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<link rel="icon" href="favicon.ico">
-<title>タロット占い | Tarot Reading | 大アルカナ22枚・AI相談対応 - ✿ YUCCHI ✿</title>
-<meta name="description" content="大アルカナ22枚のタロット占いアプリ。ワンオラクル・スリーカード・クロスのスプレッドに対応。結果をコピーしてお好きなAIに相談できます。ログイン不要・完全無料。by ✿ YUCCHI ✿">
-<meta property="og:title" content="タロット占い | Tarot Reading - ✿ YUCCHI ✿">
-<meta property="og:description" content="大アルカナ22枚のタロット占いアプリ。ワンオラクル・スリーカード・クロス対応。結果をAIに相談できます。ログイン不要・完全無料。">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light only;
@@ -618,7 +621,7 @@
     -webkit-backdrop-filter: blur(10px);
     border-radius: var(--radius);
     padding: 24px 22px;
-    margin-bottom: 14px;
+    margin-bottom: 26px;
     box-shadow: var(--shadow-sm);
     border: 1.5px solid rgba(255,255,255,0.75);
   }
@@ -666,27 +669,6 @@
     display: inline-block;
   }
 
-  /* overall message */
-  .overall-box {
-    background: rgba(255,255,255,0.55);
-    border: 1.5px solid rgba(212,198,226,0.60);
-    border-radius: var(--radius);
-    padding: 22px;
-    margin-bottom: 14px;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-  .overall-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px; font-style: italic;
-    color: var(--text); letter-spacing: .14em;
-    margin-bottom: 10px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .overall-text {
-    font-size: 13px; line-height: 2.1;
-    color: var(--text);
-  }
 
   /* AI consult box */
   .ai-consult-box {
@@ -694,7 +676,7 @@
     border: 1.5px solid rgba(232,181,181,0.55);
     border-radius: var(--radius);
     padding: 22px 22px 20px;
-    margin-bottom: 14px;
+    margin-bottom: 26px;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     text-align: center;
@@ -1062,15 +1044,15 @@
       <button class="spread-btn" onclick="selectSpread('one',this)">
         🌙<br>ワンオラクル<br><span style="font-size:10px;opacity:.7;">1枚引き</span>
       </button>
-      <button class="spread-btn" onclick="selectSpread('three',this)">
-        ✦<br>スリーカード<br><span style="font-size:10px;opacity:.7;">過去・現在・未来</span>
-      </button>
       <button class="spread-btn" onclick="selectSpread('cross',this)">
-        🌸<br>クロス<br><span style="font-size:10px;opacity:.7;">状況・アドバイス</span>
+        🌸🌼<br>クロス<br><span style="font-size:10px;opacity:.7;">状況・アドバイス</span>
+      </button>
+      <button class="spread-btn" onclick="selectSpread('three',this)">
+        ⭐️⭐️⭐️<br>スリーカード<br><span style="font-size:10px;opacity:.7;">過去・現在・未来</span>
       </button>
     </div>
 
-    <button class="draw-btn" onclick="drawCards()">シャッフルしてカードを選ぶ 🔮</button>
+    <button class="draw-btn" onclick="drawCards()">シャッフル 🔮</button>
   </div>
 
   <!-- Select phase（カードを自分で選ぶ） -->
@@ -1092,10 +1074,6 @@
     <p class="tap-hint">カードをタップしてめくる</p>
     <div class="cards-grid" id="cardsGrid"></div>
     <div id="readingsContainer"></div>
-    <div class="overall-box" id="overallBox" style="display:none">
-      <div class="overall-title">✦ 総合メッセージ</div>
-      <div class="overall-text" id="overallText"></div>
-    </div>
     <div class="ai-consult-box" id="aiConsultBox" style="display:none">
       <div class="ai-consult-title">✦ AIにもっと深く相談する</div>
       <div class="ai-consult-desc">
@@ -1140,7 +1118,7 @@
 
   </div>
   <div style="text-align:right; font-family:'Zen Maru Gothic',sans-serif; font-size:11px; color:var(--text); opacity:0.45; letter-spacing:.06em; margin-top:4px; padding-right:4px;">
-    最終更新：2026.07.04
+    最終更新：2026.07.05
   </div>
 
 </div>
@@ -1275,18 +1253,6 @@ const SPREADS = {
   cross: { label:'Cross — 状況とアドバイス', positions:['現在の状況','アドバイス'] }
 };
 
-const OVERALL = {
-  one: null,
-  three: [
-    'カードが示す流れを、ひとつの物語として受け取ってみてください。過去・現在・未来はつながっています。',
-    '三枚のカードはそれぞれ、あなたの内側にある知恵を映しています。全体の流れを感じながら、自分なりの答えを見つけてみましょう。',
-    'カードが示す流れを、物語として受け取ってみてください。道標のひとつになるかもしれません。'
-  ],
-  cross: [
-    '二枚のカードが示すものを合わせて読むとき、より深い気づきが生まれます。アドバイスのカードを、小さなことから実践してみてください。',
-    '2枚のカードをあなたなりに解釈してみてください。気づきが生まれるかもしれません。'
-  ]
-};
 
 let currentSpread = null;
 let shuffledDeck = [];     // シャッフル後の22枚（カード＋正逆）
@@ -1602,15 +1568,6 @@ function renderResult() {
   });
 
   document.querySelector('.tap-hint').classList.add('visible');
-  const ob = document.getElementById('overallBox');
-  const ot = document.getElementById('overallText');
-  if (OVERALL[currentSpread]) {
-    const msgs = OVERALL[currentSpread];
-    ot.textContent = msgs[Math.floor(Math.random() * msgs.length)];
-    ob.style.display = 'none'; // show after all flipped
-  } else {
-    ob.style.display = 'none';
-  }
 }
 
 function flipCard(idx, cardEl) {
@@ -1630,10 +1587,6 @@ function flipCard(idx, cardEl) {
     }
     if (flippedCount === drawnCards.length) {
       document.querySelector('.tap-hint').style.display = 'none';
-      if (OVERALL[currentSpread]) {
-        const ob = document.getElementById('overallBox');
-        ob.style.display = 'block';
-      }
       document.getElementById('aiConsultBox').style.display = 'block';
     }
   }, 400);
@@ -1755,7 +1708,6 @@ function resetAll() {
   document.getElementById('inputBlock').style.display = 'block';
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('readingsContainer').innerHTML = '';
-  document.getElementById('overallBox').style.display = 'none';
   document.getElementById('aiConsultBox').style.display = 'none';
   const aiToast = document.getElementById('aiToast');
   aiToast.classList.remove('visible');
