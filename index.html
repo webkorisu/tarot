@@ -321,23 +321,51 @@
 
   /* tray：選んだ位置のプレースホルダー */
   .select-slot {
-    display: flex; flex-direction: column; align-items: center; justify-content: space-evenly;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
     gap: 0;
     width: 52px;
     height: 84px;
-    padding: 10px 0;
+    padding: 8px 0;
     border-radius: 8px;
     border: 1.5px dashed rgba(155,123,181,0.45);
     background: rgba(255,255,255,0.55);
-    transition: all .25s;
-    overflow: hidden;
+    transition: border-color .2s, background .2s;
     position: relative;
+    animation: none;
   }
+  /* 選んだカードがトレイに置かれた状態（mini-cardと同じデザイン） */
   .select-slot.filled {
     border-style: solid;
-    border-color: #9B7BB5;
-    background: rgba(155,123,181,0.12);
-    box-shadow: 0 2px 10px rgba(150,120,180,0.18);
+    border-color: rgba(255,255,255,0.45);
+    background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
+    box-shadow: 0 3px 10px rgba(100,70,120,0.25);
+  }
+  /* ぷるん演出：JSで付けてすぐ外すクラス */
+  .select-slot.pop {
+    animation: filledSlot 0.35s ease-out both;
+  }
+  @keyframes filledSlot {
+    0%   { transform: scale(0.75) rotate(-6deg); opacity: 0.3; }
+    70%  { transform: scale(1.05) rotate(1deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  /* filledの✦マーク：mini-card-innerと同じ見た目 */
+  .select-slot.filled .slot-inner {
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(255,255,255,0.30);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .select-slot.filled .slot-inner::before {
+    content: '✦';
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+  }
+  /* 次に選ぶスロット */
+  .select-slot.active-slot {
+    border-color: rgba(155,123,181,0.55);
+    background: rgba(255,255,255,0.80);
   }
 
   /* キラン演出：ぼんやり光が3つランダムに散らばる */
@@ -822,8 +850,8 @@
   /* shuffle animation */
   .shuffle-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(180,155,210,0.28);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    background: rgba(180,155,210,0.55);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 100;
     align-items: center; justify-content: center;
     flex-direction: column; gap: 36px;
@@ -1026,7 +1054,7 @@
   <h1>タロット占い</h1>
   <h2>Tarot Reading</h2>
   <div class="title-sub">大アルカナ 22枚</div>
-  <div class="title-feature">✦ 結果をコピーして、お好きなAIに相談できます</div>
+  <div class="title-feature">✦ 占い結果をコピーして、AIに読み解いてもらえます</div>
   <span class="brand">✿ YUCCHI ✿</span>
 
 </header>
@@ -1036,7 +1064,7 @@
   <!-- Input -->
   <div class="question-block" id="inputBlock">
     <label>✦ 占いたいこと</label>
-    <div class="question-subnote">入力すると、AIへの相談がより具体的になります（空欄でもOK）<br>⚠️ 名前・住所などの個人情報は入力しないでください</div>
+    <div class="question-subnote">入力すると、AIの占い結果がより具体的になります<br>⚠️ 名前・住所などの個人情報は入力しないでください</div>
     <textarea id="questionText" placeholder="例：今の私に必要なことは？&#10;（空欄でも大丈夫です）" rows="3"></textarea>
 
     <label style="margin-top: 18px;">✦ スプレッドを選ぶ</label>
@@ -1058,7 +1086,7 @@
   <!-- Select phase（カードを自分で選ぶ） -->
   <div class="select-block" id="selectBlock">
     <div class="select-instruction" id="selectInstruction"></div>
-    <div class="select-hint">✦ カードをなぞってシャッフルできます</div>
+    <div class="select-hint" id="selectHint">✦ カードをなぞってシャッフルできます</div>
     <div class="select-tray" id="selectTray"></div>
     <div class="select-grid" id="selectGrid"></div>
     <button class="select-confirm-btn" id="selectConfirmBtn" style="display:none" onclick="finalizeSelection()">このカードで占う 🔮</button>
@@ -1075,7 +1103,7 @@
     <div class="cards-grid" id="cardsGrid"></div>
     <div id="readingsContainer"></div>
     <div class="ai-consult-box" id="aiConsultBox" style="display:none">
-      <div class="ai-consult-title">✦ AIにもっと深く相談する</div>
+      <div class="ai-consult-title">✦ AIにさらに詳しく解説してもらう</div>
       <div class="ai-consult-desc">
         結果をコピーして、ChatGPT・Gemini・Claudeなど<br>
         お好きなAIに貼り付けると、さらに深く読み解いてもらえます。
@@ -1118,7 +1146,7 @@
 
   </div>
   <div style="text-align:right; font-family:'Zen Maru Gothic',sans-serif; font-size:11px; color:var(--text); opacity:0.45; letter-spacing:.06em; margin-top:4px; padding-right:4px;">
-    最終更新：2026.07.05
+    最終更新：2026.07.08
   </div>
 
 </div>
@@ -1330,7 +1358,8 @@ function onMiniPointerDown(i, e) {
   dragState = {
     startX: e.clientX, startY: e.clientY,
     startIndex: i, moved: false,
-    prevIndex: i, lastSwapAt: 0
+    prevIndex: i, lastSwapAt: 0,
+    shuffleLocked: selectedIndices.length > 0  // 1枚以上選択済みならシャッフル不可
   };
   window.addEventListener('pointermove', onGlobalPointerMove);
   window.addEventListener('pointerup', onGlobalPointerUp, { once: true });
@@ -1339,6 +1368,7 @@ function onMiniPointerDown(i, e) {
 
 function onGlobalPointerMove(e) {
   if (!dragState) return;
+  if (dragState.shuffleLocked) return; // 選択済みならシャッフル不可
   const dx = e.clientX - dragState.startX;
   const dy = e.clientY - dragState.startY;
   if (Math.hypot(dx, dy) > 6) dragState.moved = true;
@@ -1406,31 +1436,45 @@ function pickCard(i) {
   if (selectedIndices.length >= need) return;
   if (selectedIndices.includes(i)) return;
 
+  const slotIndex = selectedIndices.length;
   selectedIndices.push(i);
   const el = document.getElementById('mini-' + i);
   if (el) el.classList.add('picked');
+
+  // 最初のカードを選んだらヒント文をvisibility:hiddenで非表示（スペースは保つ）
+  // シャッフル操作も無効化
+  if (selectedIndices.length === 1) {
+    const hint = document.getElementById('selectHint');
+    if (hint) hint.style.visibility = 'hidden';
+    const grid = document.getElementById('selectGrid');
+    if (grid) grid.style.touchAction = 'pan-y';
+    window.removeEventListener('pointermove', onGlobalPointerMove);
+    dragState = null;
+  }
   updateSelectUI();
 
-  // キラン演出：ぼんやり光が3つランダムに散らばる
-  const slotIndex = selectedIndices.length - 1;
+  // ぷるん演出：選んだスロットだけpopクラスを一瞬付けて外す
   const slots = document.querySelectorAll('.select-slot');
   if (slots[slotIndex]) {
-    // スロットのサイズ（52x84px）の範囲内でバラバラに配置
-    const positions = [
-      { xRange: [-20, 0],  yRange: [-28, -8]  },  // 上エリア
-      { xRange: [4,  18],  yRange: [-6,  10]  },  // 右中エリア
-      { xRange: [-18, -4], yRange: [10,  26]  },  // 左下エリア
+    slots[slotIndex].classList.add('pop');
+    setTimeout(() => slots[slotIndex].classList.remove('pop'), 400);
+  }
+
+  // キラン演出：中心らへんに垂直十字が3つ固定パターンで出る
+  const kiranSlotIndex = selectedIndices.length - 1;
+  const kiranSlots = document.querySelectorAll('.select-slot');
+  if (kiranSlots[kiranSlotIndex]) {
+    const fixedPositions = [
+      { x: '-8px',  y: '-10px', delay: '0s'    },
+      { x: '6px',   y: '2px',   delay: '0.1s'  },
+      { x: '-4px',  y: '12px',  delay: '0.18s' },
     ];
-    positions.forEach(({ xRange, yRange }, k) => {
+    fixedPositions.forEach(({ x, y, delay }) => {
       const kiran = document.createElement('div');
       kiran.className = 'slot-kiran';
-      const size = Math.floor(Math.random() * 12 + 12) + 'px';
-      const kx = Math.floor(Math.random() * (xRange[1] - xRange[0]) + xRange[0]) + 'px';
-      const ky = Math.floor(Math.random() * (yRange[1] - yRange[0]) + yRange[0]) + 'px';
-      const kr = Math.floor(Math.random() * 40 - 20) + 'deg';
-      const delay = (k * 0.09 + Math.random() * 0.06).toFixed(2) + 's';
-      kiran.style.cssText = `width:${size};height:${size};--kx:${kx};--ky:${ky};--kr:${kr};--kdelay:${delay};`;
-      slots[slotIndex].appendChild(kiran);
+      const size = '18px';
+      kiran.style.cssText = `width:${size};height:${size};--kx:${x};--ky:${y};--kr:0deg;--kdelay:${delay};`;
+      kiranSlots[kiranSlotIndex].appendChild(kiran);
       setTimeout(() => kiran.remove(), 1300);
     });
   }
@@ -1441,6 +1485,14 @@ function undoSelection() {
   const last = selectedIndices.pop();
   const el = document.getElementById('mini-' + last);
   if (el) el.classList.remove('picked');
+
+  // 全部取り消したらヒント文を再表示・シャッフル操作も再有効化
+  if (selectedIndices.length === 0) {
+    const hint = document.getElementById('selectHint');
+    if (hint) hint.style.visibility = 'visible';
+    const grid = document.getElementById('selectGrid');
+    if (grid) grid.style.touchAction = 'none';
+  }
   updateSelectUI();
 }
 
@@ -1470,21 +1522,32 @@ function updateSelectUI() {
   tray.innerHTML = '';
   tray.style.display = '';
   for (let p = 0; p < need; p++) {
-    const slot = document.createElement('div');
-    slot.className = 'select-slot' + (p < have ? ' filled' : '');
+    // ラッパー（スロット＋ラベルを縦に並べる）
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:5px;';
 
+    const slot = document.createElement('div');
+    const isFilled = p < have;
+    const isActive = p === have && have < need;
+    slot.className = 'select-slot' + (isFilled ? ' filled' : '') + (isActive ? ' active-slot' : '');
+
+    if (isFilled) {
+      const inner = document.createElement('div');
+      inner.className = 'slot-inner';
+      slot.appendChild(inner);
+    }
+
+    // ラベルはスロットの下に表示
     const label = document.createElement('div');
     label.className = 'select-slot-label';
     label.textContent = spread.positions[p] || (need === 1 ? 'カード' : ('No.' + (p + 1)));
-    slot.appendChild(label);
 
-    const mark = document.createElement('div');
-    mark.className = 'select-slot-mark';
-    mark.textContent = p < have ? '✦' : String(p + 1);
-    slot.appendChild(mark);
-
-    tray.appendChild(slot);
+    wrap.appendChild(slot);
+    wrap.appendChild(label);
+    tray.appendChild(wrap);
   }
+
+  // active-slotはslot生成時に付与済みなので追加処理不要
 }
 
 function finalizeSelection() {
@@ -1587,7 +1650,11 @@ function flipCard(idx, cardEl) {
     }
     if (flippedCount === drawnCards.length) {
       document.querySelector('.tap-hint').style.display = 'none';
-      document.getElementById('aiConsultBox').style.display = 'block';
+      const aiBox = document.getElementById('aiConsultBox');
+      aiBox.style.display = 'block';
+      setTimeout(() => {
+        aiBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 2000);
     }
   }, 400);
 }
