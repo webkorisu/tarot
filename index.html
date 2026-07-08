@@ -274,16 +274,39 @@
     margin-bottom: 8px;
     padding: 16px 24px;
     border: none; border-radius: 999px;
-    background: #9E90B8;
+    background: linear-gradient(180deg, #B0A0CC 0%, #9E90B8 50%, #8878A8 100%);
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: 15px; font-weight: 700;
     color: #fff; letter-spacing: .08em;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(190,140,170,0.28);
-    transition: transform .15s, opacity .2s, box-shadow .2s;
+    box-shadow:
+      0 6px 20px rgba(140,100,180,0.38),
+      0 2px 0 rgba(255,255,255,0.18) inset,
+      0 -3px 0 rgba(0,0,0,0.12) inset;
+    transition: transform .15s, box-shadow .15s, opacity .2s;
+    position: relative;
+    overflow: hidden;
   }
-  .draw-btn:hover { opacity: .88; box-shadow: 0 6px 20px rgba(190,140,170,0.38); }
-  .draw-btn:active { transform: scale(.97); }
+  .draw-btn:hover { opacity: .92; box-shadow: 0 8px 24px rgba(140,100,180,0.45), 0 2px 0 rgba(255,255,255,0.18) inset, 0 -3px 0 rgba(0,0,0,0.12) inset; }
+  .draw-btn:active { transform: translateY(4px) !important; box-shadow: 0 2px 8px rgba(140,100,180,0.28), 0 1px 0 rgba(255,255,255,0.18) inset !important; transition: transform .08s, box-shadow .08s; }
+  /* シマー：光が左から右へ流れる */
+  .draw-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.35) 50%,
+      transparent 100%
+    );
+    animation: shimmer 2.4s ease-in-out infinite;
+    border-radius: 999px;
+  }
+  @keyframes shimmer {
+    0%   { left: -100%; }
+    60%, 100% { left: 150%; }
+  }
 
   /* ─── Select phase (カードを自分で選ぶ) ─── */
   .select-block {
@@ -336,31 +359,42 @@
   /* 選んだカードがトレイに置かれた状態（mini-cardと同じデザイン） */
   .select-slot.filled {
     border-style: solid;
-    border-color: rgba(255,255,255,0.45);
+    border-color: rgba(255,255,255,0.40);
     background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
-    box-shadow: 0 3px 10px rgba(100,70,120,0.25);
+    box-shadow: 0 3px 10px rgba(80,55,120,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
   }
   /* ぷるん演出：JSで付けてすぐ外すクラス */
   .select-slot.pop {
-    animation: filledSlot 0.35s ease-out both;
+    animation: filledSlot 0.4s ease-out both;
   }
   @keyframes filledSlot {
-    0%   { transform: scale(0.75) rotate(-6deg); opacity: 0.3; }
-    70%  { transform: scale(1.05) rotate(1deg); }
-    100% { transform: scale(1) rotate(0deg); }
+    0%   { transform: translateY(-12px); opacity: 0; }
+    70%  { transform: translateY(2px); opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
   }
-  /* filledの✦マーク：mini-card-innerと同じ見た目 */
+  /* filledの二重枠（外） */
   .select-slot.filled .slot-inner {
     position: absolute;
-    inset: 4px;
-    border: 1px solid rgba(255,255,255,0.30);
-    border-radius: 4px;
+    inset: 3px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
+  }
+  /* filledの二重枠（内） */
+  .select-slot.filled .slot-inner::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 3px;
   }
   .select-slot.filled .slot-inner::before {
     content: '✦';
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
+    font-size: 12px;
+    color: rgba(255,255,255,0.70);
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 1;
   }
   /* 次に選ぶスロット */
   .select-slot.active-slot {
@@ -428,24 +462,39 @@
     border-radius: 7px;
     cursor: pointer;
     background: linear-gradient(145deg, #8B70AA 0%, #A688AC 40%, #BFA0B8 100%);
-    border: 1.5px solid rgba(255,255,255,0.45);
-    box-shadow: 0 3px 10px rgba(100,70,120,0.25);
+    border: 1.5px solid rgba(255,255,255,0.40);
+    box-shadow: 0 3px 10px rgba(80,55,120,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
     flex-shrink: 0;
     transition: transform .18s, opacity .25s, box-shadow .18s;
     touch-action: none;
     -webkit-touch-callout: none;
     user-select: none;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
   }
+  /* 外側の二重枠（外） */
   .mini-card-inner {
-    position: absolute; inset: 4px;
-    border: 1px solid rgba(255,255,255,0.30);
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255,255,255,0.35);
     border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
   }
+  /* 外側の二重枠（内） */
+  .mini-card-inner::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 3px;
+  }
   .mini-card-inner::before {
     content: '✦';
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
+    font-size: min(14px, 3.5vw);
+    color: rgba(255,255,255,0.70);
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+    position: relative;
+    z-index: 1;
   }
   .mini-card-check {
     position: absolute; inset: 0;
@@ -472,16 +521,34 @@
     display: block; width: 100%;
     padding: 15px 24px; margin-top: 28px;
     border: none; border-radius: 999px;
-    background: #9E90B8;
+    background: linear-gradient(180deg, #B0A0CC 0%, #9E90B8 50%, #8878A8 100%);
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: 14.5px; font-weight: 700;
     color: #fff; letter-spacing: .06em;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(190,140,170,0.28);
-    transition: transform .15s, opacity .2s;
+    box-shadow:
+      0 6px 20px rgba(140,100,180,0.38),
+      0 2px 0 rgba(255,255,255,0.18) inset,
+      0 -3px 0 rgba(0,0,0,0.12) inset;
+    transition: transform .15s, box-shadow .15s, opacity .2s;
+    position: relative;
+    overflow: hidden;
   }
-  .select-confirm-btn:hover { opacity: .88; }
-  .select-confirm-btn:active { transform: scale(.97); }
+  .select-confirm-btn:hover { opacity: .92; }
+  .select-confirm-btn:active { transform: translateY(4px) !important; box-shadow: 0 2px 8px rgba(140,100,180,0.28), 0 1px 0 rgba(255,255,255,0.18) inset !important; transition: transform .08s, box-shadow .08s; }
+  .select-confirm-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,255,255,0.35) 50%,
+      transparent 100%
+    );
+    animation: shimmer 2.4s ease-in-out infinite 0.6s;
+    border-radius: 999px;
+  }
 
   .select-undo-btn {
     display: inline-flex;
@@ -500,6 +567,7 @@
     transition: background .2s, opacity .2s;
   }
   .select-undo-btn:hover { background: rgba(255,255,255,0.90); opacity: .85; }
+  .select-undo-btn:active { transform: translateY(2px); }
 
   /* ─── Result area ─── */
   .result-area { display: none; }
@@ -701,19 +769,54 @@
   /* AI consult box */
   .ai-consult-box {
     background: rgba(255,255,255,0.62);
-    border: 1.5px solid rgba(232,181,181,0.55);
     border-radius: var(--radius);
     padding: 22px 22px 20px;
     margin-bottom: 26px;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     text-align: center;
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+  }
+  /* 虹色グラデーション枠：回転するグラデーションを背面に置いて枠だけ見せる */
+  .ai-consult-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    background: linear-gradient(
+      90deg,
+      #FFB8C8 0%, #FFD4A8 16%, #FFF0A8 33%,
+      #B8E8C8 50%, #B8D8F0 66%, #C8B8E8 83%, #FFB8C8 100%
+    );
+    animation: rainbowHue 5s linear infinite;
+    z-index: -1;
+  }
+  /* 内側を白で完全に塗って枠（3px分）だけ残す */
+  .ai-consult-box::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: calc(var(--radius) - 2px);
+    background: #ffffff;
+    z-index: -1;
+  }
+  @keyframes rainbowHue {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .ai-consult-box > * {
+    position: relative;
+    z-index: 1;
   }
   .ai-consult-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 17px; font-style: italic;
-    color: var(--text); letter-spacing: .12em;
+    font-size: 15px; font-style: italic;
+    color: #622D1D;
+    letter-spacing: .06em;
     margin-bottom: 8px;
+    font-weight: 700;
   }
   .ai-consult-desc {
     font-family: 'Zen Maru Gothic', sans-serif;
@@ -725,16 +828,27 @@
     display: inline-block;
     padding: 12px 26px;
     border: none; border-radius: 999px;
-    background: linear-gradient(135deg, var(--rose) 0%, var(--rose-d) 100%);
+    background: linear-gradient(180deg, #EAB8B8 0%, #CC8888 55%, #B87070 100%);
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: 13.5px; font-weight: 700;
     color: #fff; letter-spacing: .06em;
     cursor: pointer;
-    box-shadow: 0 4px 16px rgba(212,152,152,0.32);
-    transition: transform .15s, opacity .2s, box-shadow .2s;
+    box-shadow:
+      0 5px 16px rgba(180,100,100,0.22),
+      0 3px 0 rgba(255,255,255,0.28) inset,
+      0 -4px 0 rgba(0,0,0,0.10) inset,
+      0 1px 4px rgba(0,0,0,0.06);
+    transition: transform .15s, box-shadow .15s;
+    position: relative;
+    overflow: hidden;
+    animation: btnPulse 4.5s ease-in-out infinite;
   }
-  .ai-consult-btn:hover { opacity: .88; box-shadow: 0 6px 20px rgba(212,152,152,0.42); }
-  .ai-consult-btn:active { transform: scale(.97); }
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 5px 16px rgba(180,100,100,0.22), 0 3px 0 rgba(255,255,255,0.28) inset, 0 -4px 0 rgba(0,0,0,0.10) inset; }
+    50%      { box-shadow: 0 6px 22px rgba(180,100,100,0.38), 0 3px 0 rgba(255,255,255,0.28) inset, 0 -4px 0 rgba(0,0,0,0.10) inset; }
+  }
+  .ai-consult-btn:hover { transform: translateY(-1px); }
+  .ai-consult-btn:active { transform: translateY(4px) !important; box-shadow: 0 2px 8px rgba(180,100,100,0.28), 0 1px 0 rgba(255,255,255,0.18) inset !important; animation: none; transition: transform .08s, box-shadow .08s; }
   .ai-consult-toast {
     margin-top: 12px;
     font-family: 'Zen Maru Gothic', sans-serif;
@@ -759,23 +873,68 @@
   }
 
   /* again button */
-  .again-btn {
-    display: block; width: 100%;
-    padding: 14px;
-    border: 2px solid rgba(90,74,90,0.30);
-    border-radius: 999px;
-    background: rgba(255,255,255,0.50);
+  /* ─── フロートボタン（全カードめくり後に出現） ─── */
+  .float-ai-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 20px;
+    z-index: 200;
+    display: none;
+    padding: 12px 20px;
+    border: none; border-radius: 999px;
+    background: linear-gradient(180deg, #B0A0CC 0%, #9E90B8 50%, #8878A8 100%);
     font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--text);
-    opacity: 0.72;
-    letter-spacing: .08em; cursor: pointer;
-    transition: all .2s;
+    font-size: 13px; font-weight: 700;
+    color: #fff; letter-spacing: .06em;
+    cursor: pointer;
+    box-shadow:
+      0 6px 20px rgba(140,100,180,0.45),
+      0 2px 0 rgba(255,255,255,0.18) inset,
+      0 -3px 0 rgba(0,0,0,0.12) inset;
+    animation: floatBob 2.8s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  .float-ai-btn.visible {
+    display: block;
+    animation: floatPop .4s ease-out both, floatBob 2.8s ease-in-out infinite .4s;
+  }
+  @keyframes floatPop {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.85); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes floatBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  .float-ai-btn:active { transform: translateY(3px) !important; transition: transform .08s; }
+  .float-ai-btn { transition: opacity .3s ease; }
+
+  /* ─── again btn ─── */
+  .again-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 9px 20px;
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid rgba(155,123,181,0.35);
+    border-radius: 999px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: #9B7BB5;
+    letter-spacing: .04em;
+    cursor: pointer;
+    transition: background .2s, opacity .2s;
     margin-bottom: 20px;
   }
-  .again-btn:hover {
-    background: rgba(255,255,255,0.75);
-    border-color: rgba(90,74,90,0.50);
+  .again-btn:hover { background: rgba(255,255,255,0.90); opacity: .85; }
+  .again-btn:active { transform: translateY(3px); }
+
+  /* タッチデバイス用：JS制御で確実に沈む */
+  .btn-pressed {
+    transform: translateY(4px) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+    transition: transform .08s, box-shadow .08s !important;
   }
 
   /* data note */
@@ -978,6 +1137,7 @@
     transition: all .2s; letter-spacing: .06em;
   }
   .confirm-btn-cancel:hover { background: var(--blush); }
+  .confirm-btn-cancel:active { transform: translateY(2px); }
   .confirm-btn-ok {
     flex: 1; padding: 11px;
     border: none; border-radius: 999px;
@@ -989,6 +1149,7 @@
     box-shadow: 0 3px 12px rgba(150,120,180,0.30);
   }
   .confirm-btn-ok:hover { opacity: 0.88; }
+  .confirm-btn-ok:active { transform: translateY(2px); }
 
 
   @keyframes cardAppear {
@@ -1017,6 +1178,8 @@
 <div class="stars" id="stars"></div>
 
 <!-- Confirm modal -->
+<button class="float-ai-btn" id="floatAiBtn" onclick="scrollToAiBox()">AIコピー機能はこちら</button>
+
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-modal">
     <span class="confirm-modal-icon">✦</span>
@@ -1108,7 +1271,7 @@
         結果をコピーして、ChatGPT・Gemini・Claudeなど<br>
         お好きなAIに貼り付けると、さらに深く読み解いてもらえます。
       </div>
-      <button class="ai-consult-btn" onclick="copyAiPrompt()">📋 相談文をコピーする</button>
+      <button class="ai-consult-btn" onclick="copyAiPrompt()">📋 占い結果をコピーする</button>
       <div class="ai-consult-toast" id="aiToast"></div>
       <div class="ai-consult-note">コピー以外の操作は行われません。外部送信・通信は発生しません。<br>⚠️ AIに貼り付ける場合は、名前・住所などの個人情報は入力しないでください。</div>
     </div>
@@ -1652,22 +1815,10 @@ function flipCard(idx, cardEl) {
       document.querySelector('.tap-hint').style.display = 'none';
       const aiBox = document.getElementById('aiConsultBox');
       aiBox.style.display = 'block';
-      setTimeout(() => {
-        const targetY = aiBox.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2 - aiBox.offsetHeight / 2);
-        const startY = window.scrollY;
-        const distance = targetY - startY;
-        const duration = 1800; // ゆっくり1.8秒かけてスクロール
-        let startTime = null;
-        function easeInOutQuad(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
-        function step(timestamp) {
-          if (!startTime) startTime = timestamp;
-          const elapsed = timestamp - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          window.scrollTo(0, startY + distance * easeInOutQuad(progress));
-          if (progress < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-      }, 2000);
+      // フロートボタンをふわっと表示
+      const floatBtn = document.getElementById('floatAiBtn');
+      floatBtn.classList.add('visible');
+      initFloatBtnObserver();
     }
   }, 400);
 }
@@ -1769,6 +1920,73 @@ function copyAiPrompt() {
   }
 }
 
+/* ─── ボタンの沈む演出（スマホ対応） ─── */
+(function(){
+  const selectors = ['.draw-btn', '.select-confirm-btn', '.ai-consult-btn', '.again-btn', '.select-undo-btn', '.confirm-btn-ok', '.confirm-btn-cancel', '.float-ai-btn'];
+  function addPressEffect(btn) {
+    if (btn._pressReady) return;
+    btn._pressReady = true;
+    btn.addEventListener('touchstart', () => btn.classList.add('btn-pressed'), { passive: true });
+    btn.addEventListener('touchend', () => btn.classList.remove('btn-pressed'), { passive: true });
+    btn.addEventListener('touchcancel', () => btn.classList.remove('btn-pressed'), { passive: true });
+  }
+  function initButtons() {
+    selectors.forEach(sel => document.querySelectorAll(sel).forEach(addPressEffect));
+  }
+  initButtons();
+  // confirm等の動的ボタン用：DOMContentLoaded後に再実行
+  document.addEventListener('DOMContentLoaded', initButtons);
+})();
+
+// 動的に生成されるボタンへの適用（renderResult後に呼ぶ）
+function applyPressEffects() {
+  ['.draw-btn','.select-confirm-btn','.ai-consult-btn','.again-btn','.select-undo-btn','.confirm-btn-ok','.confirm-btn-cancel'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(btn => {
+      if (btn._pressReady) return;
+      btn._pressReady = true;
+      btn.addEventListener('touchstart', () => btn.classList.add('btn-pressed'), { passive: true });
+      btn.addEventListener('touchend', () => btn.classList.remove('btn-pressed'), { passive: true });
+      btn.addEventListener('touchcancel', () => btn.classList.remove('btn-pressed'), { passive: true });
+    });
+  });
+}
+
+function scrollToAiBox() {
+  const aiBox = document.getElementById('aiConsultBox');
+  const targetY = aiBox.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2 - aiBox.offsetHeight / 2);
+  const startY = window.scrollY;
+  const distance = targetY - startY;
+  const duration = 1200;
+  let startTime = null;
+  function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const progress = Math.min((ts - startTime) / duration, 1);
+    window.scrollTo(0, startY + distance * easeInOut(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// AIボックスが画面内に見えている時はフロートボタンを非表示
+function initFloatBtnObserver() {
+  const aiBox = document.getElementById('aiConsultBox');
+  const floatBtn = document.getElementById('floatAiBtn');
+  if (!aiBox || !floatBtn) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        floatBtn.style.opacity = '0';
+        floatBtn.style.pointerEvents = 'none';
+      } else {
+        floatBtn.style.opacity = '1';
+        floatBtn.style.pointerEvents = 'auto';
+      }
+    });
+  }, { threshold: 0.2 });
+  observer.observe(aiBox);
+}
+
 function openConfirm() {
   document.getElementById('confirmOverlay').classList.add('active');
 }
@@ -1789,6 +2007,7 @@ function resetAll() {
   document.getElementById('cardsGrid').innerHTML = '';
   document.getElementById('readingsContainer').innerHTML = '';
   document.getElementById('aiConsultBox').style.display = 'none';
+  document.getElementById('floatAiBtn').classList.remove('visible');
   const aiToast = document.getElementById('aiToast');
   aiToast.classList.remove('visible');
   aiToast.textContent = '';
