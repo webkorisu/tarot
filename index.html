@@ -1653,7 +1653,20 @@ function flipCard(idx, cardEl) {
       const aiBox = document.getElementById('aiConsultBox');
       aiBox.style.display = 'block';
       setTimeout(() => {
-        aiBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const targetY = aiBox.getBoundingClientRect().top + window.scrollY - (window.innerHeight / 2 - aiBox.offsetHeight / 2);
+        const startY = window.scrollY;
+        const distance = targetY - startY;
+        const duration = 1800; // ゆっくり1.8秒かけてスクロール
+        let startTime = null;
+        function easeInOutQuad(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          window.scrollTo(0, startY + distance * easeInOutQuad(progress));
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
       }, 2000);
     }
   }, 400);
