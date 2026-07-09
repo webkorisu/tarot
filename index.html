@@ -128,14 +128,14 @@
   header {
     position: relative; z-index: 1;
     text-align: center;
-    padding: 20px 20px 10px;
+    padding: 12px 20px 6px;
   }
   .header-ornament {
     font-size: 22px;
     letter-spacing: .3em;
     color: var(--text);
     opacity: 0.45;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     display: block;
   }
   header h1 {
@@ -290,23 +290,6 @@
   .draw-btn:hover { opacity: .92; box-shadow: 0 8px 24px rgba(140,100,180,0.45), 0 2px 0 rgba(255,255,255,0.18) inset, 0 -3px 0 rgba(0,0,0,0.12) inset; }
   .draw-btn:active { transform: translateY(4px) !important; box-shadow: 0 2px 8px rgba(140,100,180,0.28), 0 1px 0 rgba(255,255,255,0.18) inset !important; transition: transform .08s, box-shadow .08s; }
   /* シマー：光が左から右へ流れる */
-  .draw-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255,255,255,0.35) 50%,
-      transparent 100%
-    );
-    animation: shimmer 2.4s ease-in-out infinite;
-    border-radius: 999px;
-  }
-  @keyframes shimmer {
-    0%   { left: -100%; }
-    60%, 100% { left: 150%; }
-  }
 
   /* ─── Select phase (カードを自分で選ぶ) ─── */
   .select-block {
@@ -536,24 +519,14 @@
   }
   .select-confirm-btn:hover { opacity: .92; }
   .select-confirm-btn:active { transform: translateY(4px) !important; box-shadow: 0 2px 8px rgba(140,100,180,0.28), 0 1px 0 rgba(255,255,255,0.18) inset !important; transition: transform .08s, box-shadow .08s; }
-  .select-confirm-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 60%; height: 100%;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255,255,255,0.35) 50%,
-      transparent 100%
-    );
-    animation: shimmer 2.4s ease-in-out infinite 0.6s;
-    border-radius: 999px;
-  }
 
   .select-undo-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: 8px;
     padding: 9px 20px;
     background: rgba(255,255,255,0.65);
@@ -578,9 +551,10 @@
     text-align: center;
     font-family: 'Cormorant Garamond', serif;
     font-size: 18px; font-style: italic;
-    color: rgba(255,255,255,0.80);
+    color: #7A60A0;
     letter-spacing: .18em;
     margin-bottom: 16px;
+    text-shadow: 0 1px 6px rgba(255,255,255,0.6);
   }
 
   /* ─── Card grid ─── */
@@ -597,12 +571,13 @@
   }
   .card-position-label {
     font-weight: 700;
-    color: rgba(255,255,255,0.80);
+    color: #7A60A0;
     letter-spacing: .14em;
     margin-bottom: 16px;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic; font-size: 17px;
     white-space: nowrap;
+    text-shadow: 0 1px 6px rgba(255,255,255,0.6);
   }
   .tarot-card {
     width: min(130px, 28vw); height: min(220px, 47vw);
@@ -879,7 +854,8 @@
     bottom: 28px;
     right: 20px;
     z-index: 200;
-    display: none;
+    opacity: 0;
+    visibility: hidden;
     padding: 12px 20px;
     border: none; border-radius: 999px;
     background: linear-gradient(180deg, #B0A0CC 0%, #9E90B8 50%, #8878A8 100%);
@@ -891,12 +867,17 @@
       0 6px 20px rgba(140,100,180,0.45),
       0 2px 0 rgba(255,255,255,0.18) inset,
       0 -3px 0 rgba(0,0,0,0.12) inset;
-    animation: floatBob 2.8s ease-in-out infinite;
     white-space: nowrap;
+    transition: opacity .8s ease, visibility .8s ease;
   }
   .float-ai-btn.visible {
-    display: block;
+    opacity: 1;
+    visibility: visible;
     animation: floatPop .4s ease-out both, floatBob 2.8s ease-in-out infinite .4s;
+  }
+  .float-ai-btn.hide {
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
   @keyframes floatPop {
     0%   { opacity: 0; transform: translateY(20px) scale(0.85); }
@@ -907,7 +888,6 @@
     50%      { transform: translateY(-5px); }
   }
   .float-ai-btn:active { transform: translateY(3px) !important; transition: transform .08s; }
-  .float-ai-btn { transition: opacity .3s ease; }
 
   /* ─── again btn ─── */
   .again-btn {
@@ -1082,7 +1062,7 @@
   }
 
   @media(min-width:600px){
-    header { padding: 28px 20px 12px; }
+    header { padding: 16px 20px 8px; }
   }
 
   @media(prefers-color-scheme:dark){
@@ -1228,7 +1208,7 @@
   <div class="question-block" id="inputBlock">
     <label>✦ 占いたいこと</label>
     <div class="question-subnote">入力すると、AIの占い結果がより具体的になります<br>⚠️ 名前・住所などの個人情報は入力しないでください</div>
-    <textarea id="questionText" placeholder="例：今の私に必要なことは？&#10;（空欄でも大丈夫です）" rows="3"></textarea>
+    <textarea id="questionText" maxlength="200" placeholder="例：今の私に必要なことは？&#10;（空欄でも大丈夫です）" rows="3"></textarea>
 
     <label style="margin-top: 18px;">✦ スプレッドを選ぶ</label>
     <div class="spread-row">
@@ -1309,7 +1289,7 @@
 
   </div>
   <div style="text-align:right; font-family:'Zen Maru Gothic',sans-serif; font-size:11px; color:var(--text); opacity:0.45; letter-spacing:.06em; margin-top:4px; padding-right:4px;">
-    最終更新：2026.07.08
+    最終更新：2026.07.09
   </div>
 
 </div>
@@ -1976,11 +1956,9 @@ function initFloatBtnObserver() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        floatBtn.style.opacity = '0';
-        floatBtn.style.pointerEvents = 'none';
+        floatBtn.classList.add('hide');
       } else {
-        floatBtn.style.opacity = '1';
-        floatBtn.style.pointerEvents = 'auto';
+        floatBtn.classList.remove('hide');
       }
     });
   }, { threshold: 0.2 });
@@ -2008,6 +1986,7 @@ function resetAll() {
   document.getElementById('readingsContainer').innerHTML = '';
   document.getElementById('aiConsultBox').style.display = 'none';
   document.getElementById('floatAiBtn').classList.remove('visible');
+  document.getElementById('floatAiBtn').classList.remove('hide');
   const aiToast = document.getElementById('aiToast');
   aiToast.classList.remove('visible');
   aiToast.textContent = '';
