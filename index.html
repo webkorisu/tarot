@@ -309,10 +309,10 @@
 
   .select-instruction {
     font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 16px; font-weight: 700;
+    font-size: clamp(12px, 3.5vw, 15px); font-weight: 700;
     color: #9B7BB5;
-    letter-spacing: .06em;
-    line-height: 1.6;
+    letter-spacing: .04em;
+    line-height: 1.5;
     margin-bottom: 6px;
     min-height: 22px;
   }
@@ -529,7 +529,7 @@
     box-sizing: border-box;
     margin-top: 8px;
     padding: 9px 20px;
-    background: rgba(255,255,255,0.65);
+    background: rgba(155,123,181,0.08);
     border: 1.5px solid rgba(155,123,181,0.35);
     border-radius: 999px;
     font-family: 'Zen Maru Gothic', sans-serif;
@@ -539,7 +539,7 @@
     cursor: pointer;
     transition: background .2s, opacity .2s;
   }
-  .select-undo-btn:hover { background: rgba(255,255,255,0.90); opacity: .85; }
+  .select-undo-btn:hover { background: rgba(155,123,181,0.12); }
   .select-undo-btn:active { transform: translateY(2px); }
 
   /* ─── Result area ─── */
@@ -907,8 +907,19 @@
     transition: background .2s, opacity .2s;
     margin-bottom: 20px;
   }
-  .again-btn:hover { background: rgba(255,255,255,0.90); opacity: .85; }
+  .again-btn:hover { background: rgba(155,123,181,0.12); }
   .again-btn:active { transform: translateY(3px); }
+
+  /* ─── TOPに戻る・取り消しボタン共通スタイル（3つのボタンで統一） ─── */
+  .top-return-btn {
+    background: #F3EDF7;
+    border: 1.5px solid rgba(155,123,181,0.35);
+    font-size: 13px;
+    color: #9B7BB5;
+  }
+  .top-return-btn:hover {
+    background: #FFFFFF;
+  }
 
   /* タッチデバイス用：JS制御で確実に沈む */
   .btn-pressed {
@@ -1044,16 +1055,18 @@
   .shuffle-texts {
     display: flex; flex-direction: column; gap: 4px; align-items: center;
   }
+  .shuffle-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 17px; font-style: italic;
-    color: rgba(240,230,248,0.55); letter-spacing: .22em;
-    text-shadow: 0 0 16px rgba(220,205,235,0.35);
+    color: rgba(255,255,255,0.95); letter-spacing: .22em;
+    text-shadow: 0 0 14px rgba(90,60,140,0.55), 0 1px 3px rgba(70,45,110,0.4);
     animation: fadeInOut 1.4s ease-in-out infinite;
   }
   .shuffle-sub {
     font-family: 'Zen Maru Gothic', sans-serif;
     font-size: 14px; font-weight: 700;
-    color: rgba(235,225,245,0.50); letter-spacing: .12em;
+    color: rgba(255,255,255,0.90); letter-spacing: .12em;
+    text-shadow: 0 1px 3px rgba(70,45,110,0.35);
     animation: fadeInOut 1.4s ease-in-out infinite 0.2s;
   }
   @keyframes fadeInOut {
@@ -1234,9 +1247,9 @@
     <div class="select-grid" id="selectGrid"></div>
     <button class="select-confirm-btn" id="selectConfirmBtn" style="display:none" onclick="finalizeSelection()">このカードで占う 🔮</button>
     <br>
-    <button class="select-undo-btn" id="selectUndoBtn" style="display:none" onclick="undoSelection()">✕ 1枚取り消す</button>
+    <button class="select-undo-btn top-return-btn" id="selectUndoBtn" style="display:none" onclick="undoSelection()">✕ 1枚取り消す</button>
     <br>
-    <button class="select-undo-btn" style="margin-top:8px;" onclick="openConfirm()">← TOPに戻る</button>
+    <button class="select-undo-btn top-return-btn" style="margin-top:8px;" onclick="openConfirm()">← TOPに戻る</button>
   </div>
 
   <!-- Result -->
@@ -1255,7 +1268,7 @@
       <div class="ai-consult-toast" id="aiToast"></div>
       <div class="ai-consult-note">コピー以外の操作は行われません。外部送信・通信は発生しません。<br>⚠️ AIに貼り付ける場合は、名前・住所などの個人情報は入力しないでください。</div>
     </div>
-    <button class="again-btn" onclick="openConfirm()">✧ TOP に戻る</button>
+    <button class="again-btn top-return-btn" onclick="openConfirm()">✧ TOP に戻る</button>
   </div>
 
   <!-- Footer notes -->
@@ -1463,7 +1476,7 @@ function drawCards() {
   setTimeout(() => {
     loading.classList.remove('active');
     startSelection();
-  }, 1000);
+  }, 1800);
 }
 
 /* ─── カードを自分で選ぶフェーズ ─── */
